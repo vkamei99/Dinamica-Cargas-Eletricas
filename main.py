@@ -27,22 +27,35 @@ def calcula_forca(q1, q2, r1, r2):
     forca = (1 / (4 * np.pi * Eo)) * (q1 * q2) / R**2 * ar
     return forca
 
-def atualiza_forca():
-    pass
-
-def main():
+def atualiza_tudo():
     # Calcula a força resultante em cada uma das cargas
-    for i,carga1 in enumerate(Cargas):
-        for j,carga2 in enumerate(Cargas):
-            if i != j:
+    for carga1 in Cargas:
+        for carga2 in Cargas:
+            if carga1 != carga2:
                 carga1["f"] += calcula_forca(carga1["q"], carga2["q"], carga1["pos"], carga2["pos"])
 
-    print(Cargas[0]["f"], Cargas[1]["f"], Cargas[2]["f"])
+    #calcula a acelaração e a velocidade e atualiza a posição da particula
+    for carga in Cargas:
+        aceleracao = carga["f"]/carga["massa"]
+        carga["vel"] += aceleracao * dt                  # v = vo + at
+        carga["pos"] += carga["vel"] * dt                # s = so + vt
+    
+def main():
+    plt.figure("Trabalho de Eletromag 1")
+    plt.xlim(0, 10)
+    plt.ylim(0, 10)
+    
+    for carga in Cargas:
+        x = plt.scatter(carga["pos"][0], carga["pos"][1])
 
-    #plt.figure("Trabalho de Eletromag 1")
-    #plt.xlim(0, 10)
-    #plt.ylim(0, 10)
-    #plt.show()
+    
+    for i in range(100):
+        atualiza_tudo()
+        for i,carga in enumerate(Cargas):
+            print(f"Posição da Carga {i} {carga['pos'][0]}, {carga['pos'][1]}")
+        plt.pause(0.001)
+        
+    plt.show()
 
 if __name__ == "__main__":
     main()
