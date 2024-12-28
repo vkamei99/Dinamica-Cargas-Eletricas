@@ -46,15 +46,16 @@ def main():
     plt.ylim(0, 10)
     
     for carga in Cargas:
-        x = plt.scatter(carga["pos"][0], carga["pos"][1])
+        plt.scatter(carga["pos"][0], carga["pos"][1], label=f"q = {carga['q']}")
 
     
-    for i in range(100):
+    '''for i in range(100):
         atualiza_tudo()
         for i,carga in enumerate(Cargas):
             print(f"Posição da Carga {i} {carga['pos'][0]}, {carga['pos'][1]}")
-        plt.pause(0.001)
-        
+        plt.pause(0.001)'''
+    
+    plt.legend()    
     plt.show()
 
 if __name__ == "__main__":
