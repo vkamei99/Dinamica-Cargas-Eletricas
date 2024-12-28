@@ -8,9 +8,9 @@ Eo = 8.854e-12 #Permissibilidade Elétrica
 
 #P = {Carga, Posição, Massa}
 Cargas = [
-    {"q": 2e-6,  "massa": 1e-3, "pos": np.array([2.0, 3.0]), "vel": np.array([0.0, 0.0]), "f": np.array([0.0, 0.0])},
-    {"q": -3e-6, "massa": 1e-3, "pos": np.array([5.0, 7.0]), "vel": np.array([0.0, 0.0]), "f": np.array([0.0, 0.0])},
-    {"q": 4e-6,  "massa": 1e-3, "pos": np.array([9.0, 2.0]), "vel": np.array([0.0, 0.0]), "f": np.array([0.0, 0.0])}
+    {"q": 2e-6,  "massa": 1e-3, "pos": np.array([3.0, 3.0]), "vel": np.array([0.0, 0.0]), "f": np.array([0.0, 0.0])},
+    {"q": -3e-6, "massa": 1.5e-3, "pos": np.array([6.0, 7.0]), "vel": np.array([0.0, 0.0]), "f": np.array([0.0, 0.0])},
+    {"q": 1.5e-6,  "massa": 1.2e-3, "pos": np.array([8.0, 2.0]), "vel": np.array([0.0, 0.0]), "f": np.array([0.0, 0.0])}
 ]
 
 pontos = []
@@ -24,6 +24,8 @@ def calcula_forca(q1, q2, r1, r2):
     '''
     r21 = r1 - r2
     R = np.linalg.norm(r21) 
+    if R < 0.1:
+        R = 0.1
     ar = r21 / R  # Vetor unitário
     forca = (1 / (4 * np.pi * Eo)) * (q1 * q2) / R**2 * ar
     return forca
