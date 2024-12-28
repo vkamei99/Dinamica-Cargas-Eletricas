@@ -48,6 +48,7 @@ def atualiza_tudo(frame):
         carga["vel"] += aceleracao * dt                  # v = vo + at
         carga["pos"] += carga["vel"] * dt                # s = so + vt
     
+    # Atualiza os pontos no gráfico usando a função set_offsets
     for i,carga in enumerate(Cargas):
         pontos[i].set_offsets([carga["pos"][0], carga["pos"][1]])
 
@@ -59,7 +60,8 @@ def main():
     ax.set_ylim(0, 10)
 
     for carga in Cargas:
-        pontos.append(plt.scatter(carga["pos"][0], carga["pos"][1], label=f"q = {carga['q']}"))
+        ponto = (plt.scatter(carga["pos"][0], carga["pos"][1], label=f"q = {carga['q']}C"))
+        pontos.append(ponto)
     
     animation = FuncAnimation(fig=fig, func=atualiza_tudo, frames=500, interval=dt * 1000, blit=True)
     
