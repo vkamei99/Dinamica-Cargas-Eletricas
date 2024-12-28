@@ -28,6 +28,13 @@ def calcula_forca(q1, q2, r1, r2):
     return forca
 
 def atualiza_tudo():
+    '''
+    Atualiza as posições das cargas
+    '''
+    # Zera a força antes do cálculo
+    for carga in Cargas:
+        carga["f"] = np.array([0.0, 0.0])
+
     # Calcula a força resultante em cada uma das cargas
     for carga1 in Cargas:
         for carga2 in Cargas:
@@ -41,21 +48,22 @@ def atualiza_tudo():
         carga["pos"] += carga["vel"] * dt                # s = so + vt
     
 def main():
-    plt.figure("Trabalho de Eletromag 1")
-    plt.xlim(0, 10)
-    plt.ylim(0, 10)
+    fig, ax = plt.subplots()
+    ax.set_xlim(0, 10)
+    ax.set_ylim(0, 10)
     
     for carga in Cargas:
-        plt.scatter(carga["pos"][0], carga["pos"][1], label=f"q = {carga['q']}")
+        pontos = plt.scatter(carga["pos"][0], carga["pos"][1], label=f"q = {carga['q']}")
 
+    ax.legend()    
     
-    '''for i in range(100):
+    for i in range(100):
         atualiza_tudo()
         for i,carga in enumerate(Cargas):
             print(f"Posição da Carga {i} {carga['pos'][0]}, {carga['pos'][1]}")
-        plt.pause(0.001)'''
     
-    plt.legend()    
+    #animation = FuncAnimation(fig=fig, func=atualiza_tudo, frames=100, interval = dt)
+    
     plt.show()
 
 if __name__ == "__main__":
