@@ -13,6 +13,7 @@ Cargas = [
     {"q": 4e-6,  "massa": 1e-3, "pos": np.array([9.0, 2.0]), "vel": np.array([0.0, 0.0]), "f": np.array([0.0, 0.0])}
 ]
 
+pontos = []
 
 #Variaveis para simulação
 dt = 0.01
@@ -27,7 +28,7 @@ def calcula_forca(q1, q2, r1, r2):
     forca = (1 / (4 * np.pi * Eo)) * (q1 * q2) / R**2 * ar
     return forca
 
-def atualiza_tudo():
+def atualiza_tudo(frame):
     '''
     Atualiza as posições das cargas
     '''
@@ -47,23 +48,22 @@ def atualiza_tudo():
         carga["vel"] += aceleracao * dt                  # v = vo + at
         carga["pos"] += carga["vel"] * dt                # s = so + vt
     
+    for i,carga in enumerate(Cargas):
+        pontos[i].set_offsets([carga["pos"][0], carga["pos"][1]])
+
+    return pontos
+
 def main():
     fig, ax = plt.subplots()
     ax.set_xlim(0, 10)
     ax.set_ylim(0, 10)
-    
-    for carga in Cargas:
-        pontos = plt.scatter(carga["pos"][0], carga["pos"][1], label=f"q = {carga['q']}")
 
+    for carga in Cargas:
+        pontos.append(plt.scatter(carga["pos"][0], carga["pos"][1], label=f"q = {carga['q']}"))
+    
+    animation = FuncAnimation(fig=fig, func=atualiza_tudo, frames=500, interval=dt * 1000, blit=True)
+    
     ax.legend()    
-    
-    for i in range(100):
-        atualiza_tudo()
-        for i,carga in enumerate(Cargas):
-            print(f"Posição da Carga {i} {carga['pos'][0]}, {carga['pos'][1]}")
-    
-    #animation = FuncAnimation(fig=fig, func=atualiza_tudo, frames=100, interval = dt)
-    
     plt.show()
 
 if __name__ == "__main__":
