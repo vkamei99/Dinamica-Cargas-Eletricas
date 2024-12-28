@@ -12,7 +12,7 @@ Cargas = [
     {"q": -3e-6, "massa": 1e-3, "pos": np.array([5.0, 7.0, 9.0]), "vel": np.array([0.0, 0.0, 0.0]), "f": np.array([0.0, 0.0, 0.0])},
     {"q": 4e-6,  "massa": 1e-3, "pos": np.array([9.0, 2.0, 5.0]), "vel": np.array([0.0, 0.0, 0.0]), "f": np.array([0.0, 0.0, 0.0])}
 ]
-
+pontos = []
 
 #Variaveis para simulação
 dt = 0.01
@@ -27,7 +27,14 @@ def calcula_forca(q1, q2, r1, r2):
     forca = (1 / (4 * np.pi * Eo)) * (q1 * q2) / R**2 * ar
     return forca
 
-def atualiza_tudo():
+def atualiza_tudo(frame):
+    '''
+    Atualiza as posições das cargas
+    '''
+    # Zera a força antes do cálculo
+    for carga in Cargas:
+        carga["f"] = np.array([0.0, 0.0, 0.0])
+
     # Calcula a força resultante em cada uma das cargas
     for carga1 in Cargas:
         for carga2 in Cargas:
@@ -40,22 +47,24 @@ def atualiza_tudo():
         carga["vel"] += aceleracao * dt                  # v = vo + at
         carga["pos"] += carga["vel"] * dt                # s = so + vt
     
+    # Atualiza os pontos no gráfico
+    for i,carga in enumerate(Cargas):
+        pontos[i]._offsets3d = (carga["pos"][0:1], carga["pos"][1:2], carga["pos"][2:3])        
+    return pontos
+
 def main():
+    fig = plt.figure()
     ax = plt.axes(projection = "3d")
     ax.set_xlim(0, 10)
     ax.set_ylim(0, 10)
     ax.set_zlim(0, 10)
 
     for carga in Cargas:
-        x = ax.scatter(carga["pos"][0], carga["pos"][1], carga["pos"][2])
-
+        ponto = ax.scatter(carga["pos"][0], carga["pos"][1], carga["pos"][2])
+        pontos.append(ponto)
     
-    for i in range(100):
-        atualiza_tudo()
-        for i,carga in enumerate(Cargas):
-            print(f"Posição da Carga {i} {carga['pos'][0]}, {carga['pos'][1]}")
-        plt.pause(0.001)
-        
+    animation = FuncAnimation(fig=fig, func=atualiza_tudo, frames=500, interval=dt * 1000)
+ 
     plt.show()
 
 if __name__ == "__main__":
