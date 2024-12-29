@@ -8,12 +8,13 @@ Eo = 8.854e-12 #Permissibilidade Elétrica
 
 #P = {Carga, Posição, Massa}
 Cargas = [
-    {"q": 2e-6,  "massa": 1e-3, "pos": np.array([3.0, 3.0]), "vel": np.array([0.0, 0.0]), "f": np.array([0.0, 0.0])},
-    {"q": -3e-6, "massa": 1.5e-3, "pos": np.array([6.0, 7.0]), "vel": np.array([0.0, 0.0]), "f": np.array([0.0, 0.0])},
+    {"q": 2e-6,    "massa": 1e-3,   "pos": np.array([3.0, 3.0]), "vel": np.array([0.0, 0.0]), "f": np.array([0.0, 0.0])},
+    {"q": -3e-6,   "massa": 1.5e-3, "pos": np.array([6.0, 7.0]), "vel": np.array([0.0, 0.0]), "f": np.array([0.0, 0.0])},
     {"q": 1.5e-6,  "massa": 1.2e-3, "pos": np.array([8.0, 2.0]), "vel": np.array([0.0, 0.0]), "f": np.array([0.0, 0.0])}
 ]
 
 pontos = []
+quivers = []
 
 #Variaveis para simulação
 dt = 0.01
@@ -52,9 +53,10 @@ def atualiza_tudo(frame):
     
     # Atualiza os pontos no gráfico usando a função set_offsets
     for i,carga in enumerate(Cargas):
-        pontos[i].set_offsets([carga["pos"][0], carga["pos"][1]])
-
-    return pontos
+        pontos[i].set_offsets(carga["pos"])
+        quivers[i].set_offsets(carga["pos"])
+        quivers[i].set_UVC(carga["f"][0] * 5, carga["f"][1] * 5)
+    return pontos + quivers
 
 def main():
     fig, ax = plt.subplots()
@@ -62,10 +64,14 @@ def main():
     ax.set_ylim(0, 10)
 
     for carga in Cargas:
-        ponto = (plt.scatter(carga["pos"][0], carga["pos"][1], label=f"q = {carga['q']}C"))
+        ponto = ax.scatter(carga["pos"][0], carga["pos"][1], label=f"q = {carga['q']}C")
         pontos.append(ponto)
+        
+        quiver = ax.quiver(carga["pos"][0], carga["pos"][1], carga["f"][0], carga["f"][1],
+                           angles='xy', scale_units='xy', scale=0.1)
+        quivers.append(quiver)
     
-    animation = FuncAnimation(fig=fig, func=atualiza_tudo, frames=500, interval=dt * 1000, blit=True)
+    animation = FuncAnimation(fig=fig, func=atualiza_tudo, frames=500, interval=dt * 1000, blit=False)
     
     ax.legend()    
     plt.show()
