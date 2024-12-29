@@ -14,6 +14,7 @@ Cargas = [
 ]
 
 pontos = []
+quivers = []
 
 #Variaveis para simulação
 dt = 0.01
@@ -53,8 +54,9 @@ def atualiza_tudo(frame):
     # Atualiza os pontos no gráfico usando a função set_offsets
     for i,carga in enumerate(Cargas):
         pontos[i].set_offsets(carga["pos"])
-
-    return pontos 
+        quivers[i].set_offsets(carga["pos"])
+        quivers[i].set_UVC(carga["f"][0] * 5, carga["f"][1] * 5)
+    return pontos + quivers
 
 def main():
     fig, ax = plt.subplots()
@@ -62,6 +64,10 @@ def main():
     ax.set_ylim(0, 10)
 
     for carga in Cargas:
+        quiver = ax.quiver(carga["pos"][0], carga["pos"][1], carga["f"][0], carga["f"][1],
+                           angles='xy', scale_units='xy', scale=0.5)
+        quivers.append(quiver)
+        
         ponto = ax.scatter(carga["pos"][0], carga["pos"][1], label=f"q = {carga['q']}C")
         pontos.append(ponto)
         
