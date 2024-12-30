@@ -8,12 +8,13 @@ Eo = 8.854e-12 #Permissibilidade Elétrica
 
 #P = {Carga, Posição, Massa}
 Cargas = [
-    {"q": 2e-6,    "massa": 1e-3,   "pos": np.array([3.0, 3.0]), "vel": np.array([0.0, 0.0]), "f": np.array([0.0, 0.0])},
-    {"q": -3e-6,   "massa": 1.5e-3, "pos": np.array([6.0, 7.0]), "vel": np.array([0.0, 0.0]), "f": np.array([0.0, 0.0])},
-    {"q": 1.5e-6,  "massa": 1.2e-3, "pos": np.array([8.0, 2.0]), "vel": np.array([0.0, 0.0]), "f": np.array([0.0, 0.0])}
+    {"q": 2e-6,    "massa": 1e-3,   "pos": np.array([3.0, 3.0]), "vel": np.array([0.0, 0.0]), "f": np.array([0.0, 0.0]), "trajetoria": [[], []]},
+    {"q": -3e-6,   "massa": 1.5e-3, "pos": np.array([6.0, 7.0]), "vel": np.array([0.0, 0.0]), "f": np.array([0.0, 0.0]), "trajetoria": [[], []]},
+    {"q": 1.5e-6,  "massa": 1.2e-3, "pos": np.array([8.0, 2.0]), "vel": np.array([0.0, 0.0]), "f": np.array([0.0, 0.0]), "trajetoria": [[], []]}
 ]
 
 pontos = []
+linhas = []
 
 #Variaveis para simulação
 dt = 0.01
@@ -50,9 +51,13 @@ def atualiza_tudo(frame):
         carga["vel"] += aceleracao * dt                  # v = vo + at
         carga["pos"] += carga["vel"] * dt                # s = so + vt
     
+        carga["tajetoria"][0].append(carga["pos"][0])
+        carga["tajetoria"][1].append(carga["pos"][1])
+
     # Atualiza os pontos no gráfico usando a função set_offsets
     for i,carga in enumerate(Cargas):
         pontos[i].set_offsets(carga["pos"])
+        linhas[i].set_data(carga["trajetoria"][0], carga["trajetoria"][1])
 
     return pontos 
 
@@ -62,11 +67,15 @@ def main():
     ax.set_ylim(0, 10)
 
     for carga in Cargas:
+        linha = ax.plot([], [])
+        linhas.append(linha)
+
         ponto = ax.scatter(carga["pos"][0], carga["pos"][1], label=f"q = {carga['q']}C")
         pontos.append(ponto)
         
-    animation = FuncAnimation(fig=fig, func=atualiza_tudo, frames=500, interval=dt * 1000, blit=False)
+    animation = FuncAnimation(fig=fig, func=atualiza_tudo, frames=1000, interval=dt * 1000)
     
+    #animation.save('Render.mp4')
     ax.legend()    
     plt.show()
 
