@@ -51,8 +51,8 @@ def atualiza_tudo(frame):
         carga["vel"] += aceleracao * dt                  # v = vo + at
         carga["pos"] += carga["vel"] * dt                # s = so + vt
     
-        carga["tajetoria"][0].append(carga["pos"][0])
-        carga["tajetoria"][1].append(carga["pos"][1])
+        carga["trajetoria"][0].append(carga["pos"][0])
+        carga["trajetoria"][1].append(carga["pos"][1])
 
     # Atualiza os pontos no gráfico usando a função set_offsets
     for i,carga in enumerate(Cargas):
