@@ -68,7 +68,7 @@ def main():
     ax.set_ylim(0, 10)
 
     for carga in Cargas:
-        linha, = ax.plot([], [], ls = ':')
+        linha, = ax.plot([], [], ls = '--')
         linhas.append(linha)
 
         ponto = ax.scatter(carga["pos"][0], carga["pos"][1], label=f"q = {carga['q']}C")

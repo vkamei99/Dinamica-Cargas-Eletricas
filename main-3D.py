@@ -73,7 +73,7 @@ def main():
     ax.set_zlim(0, 10)
 
     for carga in Cargas:
-        linha, = ax.plot([], [], [], ls = ':')
+        linha, = ax.plot([], [], [], ls = '-')
         linhas.append(linha)
 
         ponto = ax.scatter(carga["pos"][0], carga["pos"][1], carga["pos"][2])
