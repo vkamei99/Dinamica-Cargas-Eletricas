@@ -51,6 +51,7 @@ def atualiza_tudo(frame):
         carga["vel"] += aceleracao * dt                  # v = vo + at
         carga["pos"] += carga["vel"] * dt                # s = so + vt
     
+        # Atualiza a trajetoria
         carga["trajetoria"][0].append(carga["pos"][0])
         carga["trajetoria"][1].append(carga["pos"][1])
 
@@ -59,7 +60,7 @@ def atualiza_tudo(frame):
         pontos[i].set_offsets(carga["pos"])
         linhas[i].set_data(carga["trajetoria"][0], carga["trajetoria"][1])
 
-    return pontos 
+    return pontos + linhas
 
 def main():
     fig, ax = plt.subplots()
@@ -67,7 +68,7 @@ def main():
     ax.set_ylim(0, 10)
 
     for carga in Cargas:
-        linha = ax.plot([], [])
+        linha, = ax.plot([], [], ls = ':')
         linhas.append(linha)
 
         ponto = ax.scatter(carga["pos"][0], carga["pos"][1], label=f"q = {carga['q']}C")

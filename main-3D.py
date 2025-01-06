@@ -8,12 +8,14 @@ Eo = 8.854e-12 #Permissibilidade Elétrica
 
 #P = {Carga, Posição, Massa}
 Cargas = [
-    {"q": 1.5e-6,  "massa": 1.2e-3, "pos": np.array([3.0, 3.0, 3.0]), "vel": np.array([0.0, 0.0, 0.0]), "f": np.array([0.0, 0.0, 0.0])},
-    {"q": -2.5e-6, "massa": 2.0e-3, "pos": np.array([7.0, 7.0, 4.0]), "vel": np.array([0.0, 0.0, 0.0]), "f": np.array([0.0, 0.0, 0.0])},
-    {"q": 3.0e-6,  "massa": 1.0e-3, "pos": np.array([5.0, 2.0, 6.0]), "vel": np.array([0.0, 0.0, 0.0]), "f": np.array([0.0, 0.0, 0.0])}
+    {"q": 1.5e-6,  "massa": 1.2e-3, "pos": np.array([3.0, 3.0, 3.0]), "vel": np.array([0.0, 0.0, 0.0]), "f": np.array([0.0, 0.0, 0.0]), "trajetoria": [[], [], []]},
+    {"q": -2.5e-6, "massa": 2.0e-3, "pos": np.array([7.0, 7.0, 4.0]), "vel": np.array([0.0, 0.0, 0.0]), "f": np.array([0.0, 0.0, 0.0]), "trajetoria": [[], [], []]},
+    {"q": 3.0e-6,  "massa": 1.0e-3, "pos": np.array([5.0, 2.0, 6.0]), "vel": np.array([0.0, 0.0, 0.0]), "f": np.array([0.0, 0.0, 0.0]), "trajetoria": [[], [], []]}
 ]
 
 pontos = []
+linhas = []
+
 
 #Variaveis para simulação
 dt = 0.01
@@ -49,11 +51,19 @@ def atualiza_tudo(frame):
         aceleracao = carga["f"]/carga["massa"]
         carga["vel"] += aceleracao * dt                  # v = vo + at
         carga["pos"] += carga["vel"] * dt                # s = so + vt
+
+        # Atualiza a trajetoria
+        carga["trajetoria"][0].append(carga["pos"][0])
+        carga["trajetoria"][1].append(carga["pos"][1])
+        carga["trajetoria"][2].append(carga["pos"][2])
     
     # Atualiza os pontos no gráfico
     for i,carga in enumerate(Cargas):
-        pontos[i]._offsets3d = (carga["pos"][0:1], carga["pos"][1:2], carga["pos"][2:3])        
-    return pontos
+        pontos[i]._offsets3d = (carga["pos"][0:1], carga["pos"][1:2], carga["pos"][2:3])  
+        linhas[i].set_data(carga["trajetoria"][0], carga["trajetoria"][1])
+        linhas[i].set_3d_properties(carga["trajetoria"][2])
+
+    return pontos + linhas
 
 def main():
     fig = plt.figure()
@@ -63,11 +73,15 @@ def main():
     ax.set_zlim(0, 10)
 
     for carga in Cargas:
+        linha, = ax.plot([], [], [], ls = ':')
+        linhas.append(linha)
+
         ponto = ax.scatter(carga["pos"][0], carga["pos"][1], carga["pos"][2])
         pontos.append(ponto)
     
-    animation = FuncAnimation(fig=fig, func=atualiza_tudo, frames=500, interval=dt * 1000)
- 
+    animation = FuncAnimation(fig=fig, func=atualiza_tudo, frames=1000, interval=dt * 1000)
+    
+    #animation.save('3DRender.mp4')
     plt.show()
 
 if __name__ == "__main__":
